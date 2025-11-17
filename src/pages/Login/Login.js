@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import style from './Register.module.css';
+import style from './Login.module.css';
 
-function Register() {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+function Login() {
+  const [form, setForm] = useState({ email: '', password: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleRegister = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const API = 'http://localhost:3005';
-      const res = await fetch(`${API}/user/register`, {
+      const res = await fetch(`${API}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -32,34 +32,26 @@ function Register() {
       }
 
       if (!res.ok) {
-        console.error('Registro falhou:', res.status, data);
-        alert(data.message || `Erro no registro (status ${res.status})`);
+        console.error('Login falhou:', res.status, data);
+        alert(data.message || `Erro no login (status ${res.status})`);
         return;
       }
 
-      alert('Usuário registrado com sucesso!');
-      setForm({ name: '', email: '', password: '' });
+      alert('Login feito com sucesso!');
+      setForm({ email: '', password: '' });
       navigate('/filmes'); // redireciona para catálogo (rota definida em App.js)
     } catch (err) {
       console.error('Erro na requisição de registro:', err);
       // mostrar mensagem de erro mais específica
-      alert(`Erro ao registrar usuário — ${err.message || 'ver console para detalhes'}`);
+      alert(`Erro ao entrar — ${err.message || 'ver console para detalhes'}`);
     }
   };
 
   return (
-    <div className={style.Register}>
-      <div className={style["register-container"]}>
-        <h1>Faça sua conta!</h1>
-        <form className={style["register-form"]} onSubmit={handleRegister}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Nome"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
+    <div className={style.Login}>
+      <div className={style["login-container"]}>
+        <h1>Entre na sua conta!</h1>
+        <form className={style["login-form"]} onSubmit={handleLogin}>
           <input
             type="email"
             name="email"
@@ -76,11 +68,11 @@ function Register() {
             onChange={handleChange}
             required
           />
-          <button type="submit">Registrar</button>
+          <button type="submit">Entrar</button>
         </form>
       </div>
     </div>
   );
 }
 
-export default Register;
+export default Login;
